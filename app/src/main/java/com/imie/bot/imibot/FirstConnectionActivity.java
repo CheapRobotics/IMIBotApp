@@ -122,6 +122,9 @@ public class FirstConnectionActivity extends Activity {
 
                 writeOutput("Success.");
 
+                Intent intent = new Intent(FirstConnectionActivity.this, JoystickActivity.class);
+                startActivity(intent);
+
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
