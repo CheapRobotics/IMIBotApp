@@ -21,14 +21,15 @@ import java.util.UUID;
 
 public class FirstConnectionActivity extends Activity {
 
-    BluetoothSocket mmSocket;
+    private BTDevice btDevice;
 
-    Spinner devicesSpinner;
-    Button refreshDevicesButton;
-    Button startButton;
-    TextView messageTextView;
+    private Spinner devicesSpinner;
+    private Button refreshDevicesButton;
+    private Button startButton;
+    private TextView messageTextView;
 
     private DeviceAdapter adapter_devices;
+    private BluetoothSocket mmSocket;
 
     final UUID uuid = UUID.fromString("815425a5-bfac-47bf-9321-c5ff980b5e11");
     final byte delimiter = 33;
@@ -118,12 +119,15 @@ public class FirstConnectionActivity extends Activity {
 
                 waitForResponse(mmInputStream, -1);
 
-                mmSocket.close();
-
                 writeOutput("Success.");
+
+                btDevice = BTDevice.getInstance();
+                btDevice.setDevice(device);
+                btDevice.setMmSocket(mmSocket);
 
                 Intent intent = new Intent(FirstConnectionActivity.this, JoystickActivity.class);
                 startActivity(intent);
+
 
             } catch (Exception e) {
                 // TODO Auto-generated catch block
