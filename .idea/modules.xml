@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/IMIBot.iml" filepath="$PROJECT_DIR$/IMIBot.iml" />
+      <module fileurl="file://C:\dev\projets\android\IMIBotApp\IMIBot.iml" filepath="C:\dev\projets\android\IMIBotApp\IMIBot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/IMIBotApp.iml" filepath="$PROJECT_DIR$/IMIBotApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

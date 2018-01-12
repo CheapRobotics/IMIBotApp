@@ -47,6 +47,15 @@ public class FirstConnectionActivity extends Activity {
         refreshDevicesButton = findViewById(R.id.refresh_devices_button);
         startButton = findViewById(R.id.start_button);
 
+        final IMIBot app = (IMIBot) getApplicationContext();
+
+        if (app.getDevice() != null){
+            BluetoothDevice memorizedDevice = app.getDevice();
+            (new Thread(new workerThread(memorizedDevice))).start();
+        }
+        writeOutput(app.getBTAddress());
+        writeOutput(app.getBTname());
+
         refreshDevicesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,6 +71,7 @@ public class FirstConnectionActivity extends Activity {
                 (new Thread(new workerThread(device))).start();
             }
         });
+
     }
 
     private void refreshDevices() {
@@ -96,6 +106,8 @@ public class FirstConnectionActivity extends Activity {
 
             writeOutput("Device: " + device.getName() + " - " + device.getAddress());
 
+            final IMIBot app = (IMIBot) getApplicationContext();
+
             try {
                 mmSocket = device.createRfcommSocketToServiceRecord(uuid);
                 if (!mmSocket.isConnected()) {
@@ -122,8 +134,13 @@ public class FirstConnectionActivity extends Activity {
                 writeOutput("Success.");
 
                 btDevice = BTDevice.getInstance();
+
                 btDevice.setDevice(device);
                 btDevice.setMmSocket(mmSocket);
+
+                app.setBTAddress(device.getAddress());
+                app.setBTname(device.getName());
+                app.setDevice(device);
 
                 Intent intent = new Intent(FirstConnectionActivity.this, JoystickActivity.class);
                 startActivity(intent);
