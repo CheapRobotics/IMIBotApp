@@ -14,7 +14,7 @@ class BTDevice {
     private static final BTDevice instance = new BTDevice();
     private BluetoothDevice device;
     private BluetoothSocket mmSocket;
-    final UUID uuid = UUID.fromString("815425a5-bfac-47bf-9321-c5ff980b5e11");
+    private final UUID uuid = UUID.fromString("815425a5-bfac-47bf-9321-c5ff980b5e11");
 
     static BTDevice getInstance() {
         return instance;
@@ -41,6 +41,15 @@ class BTDevice {
 
     public void setMmSocket(BluetoothSocket mmSocket) {
         this.mmSocket = mmSocket;
+    }
+
+    public BluetoothSocket createSocket(){
+        try {
+            mmSocket = device.createRfcommSocketToServiceRecord(uuid);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return mmSocket;
     }
 
     public void closeSocket(){

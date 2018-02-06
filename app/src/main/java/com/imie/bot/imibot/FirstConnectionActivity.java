@@ -29,9 +29,7 @@ public class FirstConnectionActivity extends Activity {
     private BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
 
     private DeviceAdapter adapter_devices;
-    private BluetoothSocket mmSocket;
 
-    final UUID uuid = UUID.fromString("815425a5-bfac-47bf-9321-c5ff980b5e11");
     final byte delimiter = 33;
     int readBufferPosition = 0;
 
@@ -46,6 +44,11 @@ public class FirstConnectionActivity extends Activity {
         devicesSpinner = findViewById(R.id.devices_spinner);
         refreshDevicesButton = findViewById(R.id.refresh_devices_button);
         startButton = findViewById(R.id.start_button);
+        btDevice = BTDevice.getInstance();
+
+        if (btDevice.getMmSocket() != null && btDevice.getMmSocket().isConnected()) {
+            (new Thread(new workerThread(btDevice.getDevice()))).start();
+        }
 
         refreshDevices();
 
@@ -95,69 +98,45 @@ public class FirstConnectionActivity extends Activity {
     }
 
     final class workerThread implements Runnable {
-        private BluetoothDevice device;
 
         public workerThread(BluetoothDevice device) {
-            this.device = device;
+            btDevice.setDevice(device);
             btAdapter.cancelDiscovery();
         }
 
         public void run() {
             clearOutput();
-            writeOutput("Starting config update.");
-
-            writeOutput("Device: " + device.getName() + " - " + device.getAddress());
-
-            final IMIBot app = (IMIBot) getApplicationContext();
+            writeOutput("Device: " + btDevice.getDevice().getName() + " - " + btDevice.getDevice().getAddress());
 
             try {
-                mmSocket = device.createRfcommSocketToServiceRecord(uuid);
-                if (!mmSocket.isConnected()) {
-                    mmSocket.connect();
+                btDevice.createSocket();
+                if (!btDevice.getMmSocket().isConnected()) {
+                    btDevice.getMmSocket().connect();
                     Thread.sleep(1000);
                 }
-
-                writeOutput("Connected.");
-
-                OutputStream mmOutputStream = mmSocket.getOutputStream();
-                final InputStream mmInputStream = mmSocket.getInputStream();
+                OutputStream mmOutputStream = btDevice.getMmSocket().getOutputStream();
+                final InputStream mmInputStream = btDevice.getMmSocket().getInputStream();
 
                 waitForResponse(mmInputStream, -1);
-
-                writeOutput("Responding hello...");
 
                 String msg = "Android says yo !";
-
                 mmOutputStream.write(msg.getBytes());
                 mmOutputStream.flush();
-
-                waitForResponse(mmInputStream, -1);
-
-                writeOutput("Success.");
-
-                btDevice = BTDevice.getInstance();
-
-                btDevice.setDevice(device);
-                btDevice.setMmSocket(mmSocket);
+                writeOutput("Connecté.");
 
                 SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
                 SharedPreferences.Editor editor = settings.edit();
-                editor.putString("BTaddress", device.getAddress());
+                editor.putString("BTaddress", btDevice.getDevice().getAddress());
                 editor.apply();
 
                 Intent intent = new Intent(FirstConnectionActivity.this, JoystickActivity.class);
                 startActivity(intent);
 
-
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
-
                 writeOutput(e.getMessage());
                 writeOutput("Failed.");
             }
-
-            writeOutput("Done.");
         }
     }
 
@@ -197,9 +176,6 @@ public class FirstConnectionActivity extends Activity {
                         byte[] encodedBytes = new byte[readBufferPosition];
                         System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
                         final String data = new String(encodedBytes, "US-ASCII");
-
-                        writeOutput("Received:" + data);
-
                         return;
                     } else {
                         readBuffer[readBufferPosition++] = b;

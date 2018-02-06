@@ -45,8 +45,6 @@ public class JoystickActivity extends Activity {
 
                 if (btDevice.getMmSocket().isConnected()){
                     int[] values = {angle, strength};
-//                    byte[] angleBytes = ByteBuffer.allocate(4).putInt(angle).array();
-//                    byte[] strengthBytes = ByteBuffer.allocate(4).putInt(strength).array();
 
                     ByteBuffer byteBuffer = ByteBuffer.allocate(values.length * 4);
                     IntBuffer intBuffer = byteBuffer.asIntBuffer();
@@ -61,7 +59,7 @@ public class JoystickActivity extends Activity {
                         e.printStackTrace();
                     }
                 } else {
-                    Toast.makeText(JoystickActivity.this, "L'IMIBot n'est plus connecté via bluetooth !",  Toast.LENGTH_LONG).show();
+                    Toast.makeText(JoystickActivity.this, "Connexion perdue !",  Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -70,6 +68,10 @@ public class JoystickActivity extends Activity {
             @Override
             public void onClick(View view) {
                 btDevice.closeSocket();
+                Toast.makeText(JoystickActivity.this, "Connexion perdue !",  Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent(JoystickActivity.this, FirstConnectionActivity.class);
+                startActivity(intent);
             }
         });
     }
