@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
@@ -20,13 +21,12 @@ import java.util.Set;
 import java.util.UUID;
 
 public class FirstConnectionActivity extends Activity {
-
     private BTDevice btDevice;
-
     private Spinner devicesSpinner;
     private Button refreshDevicesButton;
     private Button startButton;
     private TextView messageTextView;
+    private BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
 
     private DeviceAdapter adapter_devices;
     private BluetoothSocket mmSocket;
@@ -35,26 +35,27 @@ public class FirstConnectionActivity extends Activity {
     final byte delimiter = 33;
     int readBufferPosition = 0;
 
+    public static final String PREFS_NAME = "MyPrefsFile";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_connection);
         messageTextView = findViewById(R.id.messages_text);
         messageTextView.setMovementMethod(new ScrollingMovementMethod());
-
         devicesSpinner = findViewById(R.id.devices_spinner);
-
         refreshDevicesButton = findViewById(R.id.refresh_devices_button);
         startButton = findViewById(R.id.start_button);
 
-        final IMIBot app = (IMIBot) getApplicationContext();
+        refreshDevices();
 
-        if (app.getDevice() != null){
-            BluetoothDevice memorizedDevice = app.getDevice();
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        String address = settings.getString("BTaddress", "");
+
+        if (!address.equals("")){
+            BluetoothDevice memorizedDevice = btAdapter.getRemoteDevice(address);
             (new Thread(new workerThread(memorizedDevice))).start();
         }
-        writeOutput(app.getBTAddress());
-        writeOutput(app.getBTname());
 
         refreshDevicesButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,18 +79,18 @@ public class FirstConnectionActivity extends Activity {
         adapter_devices = new DeviceAdapter(this, R.layout.spinner_devices, new ArrayList<BluetoothDevice>());
         devicesSpinner.setAdapter(adapter_devices);
 
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        if (!mBluetoothAdapter.isEnabled()) {
+        if (!btAdapter.isEnabled()) {
             Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBluetooth, 0);
         }
 
-        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
         if (pairedDevices.size() > 0) {
             for (BluetoothDevice device : pairedDevices) {
                 adapter_devices.add(device);
             }
+        } else {
+            btAdapter.startDiscovery();
         }
     }
 
@@ -98,6 +99,7 @@ public class FirstConnectionActivity extends Activity {
 
         public workerThread(BluetoothDevice device) {
             this.device = device;
+            btAdapter.cancelDiscovery();
         }
 
         public void run() {
@@ -138,9 +140,10 @@ public class FirstConnectionActivity extends Activity {
                 btDevice.setDevice(device);
                 btDevice.setMmSocket(mmSocket);
 
-                app.setBTAddress(device.getAddress());
-                app.setBTname(device.getName());
-                app.setDevice(device);
+                SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString("BTaddress", device.getAddress());
+                editor.apply();
 
                 Intent intent = new Intent(FirstConnectionActivity.this, JoystickActivity.class);
                 startActivity(intent);
