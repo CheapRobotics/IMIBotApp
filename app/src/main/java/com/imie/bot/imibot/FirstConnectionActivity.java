@@ -46,16 +46,20 @@ public class FirstConnectionActivity extends Activity {
         startButton = findViewById(R.id.start_button);
         btDevice = BTDevice.getInstance();
 
+        Intent intent = new Intent(this, WifiConfiguration.class);
+        startActivity(intent);
+
+
         if (btDevice.getMmSocket() != null && btDevice.getMmSocket().isConnected()) {
             (new Thread(new workerThread(btDevice.getDevice()))).start();
         }
 
-        refreshDevices();
+        // refreshDevices();
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         String address = settings.getString("BTaddress", "");
 
-        if (!address.equals("")){
+        if (!address.equals("")) {
             BluetoothDevice memorizedDevice = btAdapter.getRemoteDevice(address);
             (new Thread(new workerThread(memorizedDevice))).start();
         }
@@ -75,7 +79,6 @@ public class FirstConnectionActivity extends Activity {
                 (new Thread(new workerThread(device))).start();
             }
         });
-
     }
 
     private void refreshDevices() {

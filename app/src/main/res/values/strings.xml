@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">IMIBot</string>
+    <string name="hotspot_on">Hotpost</string>
+    <string name="hotspot_off">Connexion</string>
+    <string name="hotspot_name">Nom du hotspot</string>
+    <string name="hotspot_pwq">Mot de passe du hotspot</string>
+    <string name="btn_valider">Valider</string>
+    <string name="btn_annuler">Annuler</string>
 </resources>
