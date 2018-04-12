@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">IMIBot</string>
+    <string name="ros_master_uri_hint">http://localhost:11311</string>
 </resources>
