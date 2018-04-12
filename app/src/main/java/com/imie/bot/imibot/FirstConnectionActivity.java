@@ -42,14 +42,23 @@ public class FirstConnectionActivity extends Activity {
         startButton = findViewById(R.id.start_button);
         rosMasterUri = findViewById(R.id.rosMasterUri);
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        String address = settings.getString("BTaddress", "");
+        String address = settings.getString(ROS_MASTER_URI, "");
+        if(!address.equals("")){
+            rosMasterUri.setText(address);
+        }
 
 
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FirstConnectionActivity.this, JoystickActivity.class);
-                intent.putExtra(ROS_MASTER_URI, rosMasterUri.getText().toString());
+                String uri = rosMasterUri.getText().toString().trim();
+                intent.putExtra(ROS_MASTER_URI, uri);
+                SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString(ROS_MASTER_URI, uri);
+                editor.commit();
+
                 startActivity(intent);
             }
         });
