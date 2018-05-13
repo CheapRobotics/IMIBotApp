@@ -3,6 +3,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -18,6 +19,9 @@ import com.github.niqdev.mjpeg.Mjpeg;
 import com.github.niqdev.mjpeg.MjpegView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.imie.bot.imibot.FirstConnectionActivity.ROS_MASTER_URI;
+
 /**
  * Created by nbethuel on 08/02/18.
  */
@@ -30,14 +34,16 @@ public class StreamFragment extends Fragment {
 
     @BindView(R.id.mjpegViewCustomAppearance)
     MjpegView mjpegView;
-    String videourl = "http://192.168.0.1:8080/?action=stream";
+    String videoUrl;
     VideoView videoView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-          ButterKnife.bind((Activity) this.getContext());
+        ButterKnife.bind((Activity) this.getContext());
+        SharedPreferences settings = this.getContext().getSharedPreferences(FirstConnectionActivity.PREFS_NAME, 0);
+        videoUrl = settings.getString(ROS_MASTER_URI, "");
+        videoUrl = videoUrl.substring(0, videoUrl.lastIndexOf(":")) + ":8080/stream?topic=/webcam/image_raw";
 }
 
     @Override
@@ -64,7 +70,7 @@ public class StreamFragment extends Fragment {
         MjpegView mjpegView = (MjpegView) this.getView().findViewById(R.id.mjpegViewCustomAppearance);
 
         Mjpeg.newInstance()
-                .open("http://192.168.0.1:8080/?action=stream", TIMEOUT)
+                .open(videoUrl, TIMEOUT)
                 .subscribe(
                         (MjpegInputStream inputStream) -> {
                             mjpegView.setSource(inputStream);
