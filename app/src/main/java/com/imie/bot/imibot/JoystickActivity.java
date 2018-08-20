@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import org.ros.address.InetAddressFactory;
 import org.ros.android.NodeMainExecutorService;
+import org.ros.android.view.VirtualJoystickView;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMain;
 
@@ -31,6 +32,8 @@ public class JoystickActivity extends Activity {
     private TextView mTextViewStrength;
     private Button quitButton;
     String masterUri;
+    private VirtualJoystickView virtualJoystickView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,14 +44,16 @@ public class JoystickActivity extends Activity {
         mTextViewAngle = findViewById(R.id.textView_angle);
         mTextViewStrength = findViewById(R.id.textView_strength);
         quitButton = findViewById(R.id.button_quit);
-        JoystickView joystickLeft = findViewById(R.id.joystickView);
+
+        virtualJoystickView = (VirtualJoystickView) findViewById(R.id.virtual_joystick);
+        
 
         // Set up ros master & JoysStick node
-        NodeMain nodePublisher = new JoystickPublisherNode(joystickLeft);
+        NodeMain nodePublisher = new JoystickPublisherNode();
         NodeMainExecutorService nodeMainExe = new NodeMainExecutorService();
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(InetAddressFactory.newNonLoopback().getHostAddress(), URI.create(masterUri));
         nodeConfiguration.setNodeName(nodePublisher.getDefaultNodeName());
-        nodeMainExe.execute(nodePublisher, nodeConfiguration);
+        nodeMainExe.execute(virtualJoystickView, nodeConfiguration);
 
         quitButton.setOnClickListener(new View.OnClickListener() {
             @Override

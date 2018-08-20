@@ -6,23 +6,20 @@
     android:layout_height="match_parent"
     tools:context="com.imie.bot.imibot.JoystickActivity">
 
-    <io.github.controlwear.virtual.joystick.android.JoystickView xmlns:custom="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/joystickView"
-        android:layout_width="388dp"
-        android:layout_height="383dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        custom:JV_backgroundColor="#363636"
-        custom:JV_borderColor="#6a7173"
-        custom:JV_borderWidth="4dp"
-        custom:JV_buttonColor="#405dff"
-        custom:JV_buttonSizeRatio="15%"
-        custom:JV_fixedCenter="false"
-        custom:layout_constraintBottom_toBottomOf="parent"
-        custom:layout_constraintEnd_toEndOf="parent"
-        custom:layout_constraintHorizontal_bias="0.466"
-        custom:layout_constraintStart_toStartOf="parent" />
+    <org.ros.android.view.VirtualJoystickView
+        android:id="@+id/virtual_joystick"
+        android:layout_width="0dp"
+        android:layout_height="0dip"
+        android:layout_gravity="center"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="4"
+        android:adjustViewBounds="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_quit" />
 
     <TextView
         android:id="@+id/textView_strength"
