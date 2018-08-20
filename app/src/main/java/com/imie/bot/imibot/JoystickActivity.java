@@ -26,6 +26,7 @@ import java.nio.IntBuffer;
 import java.util.stream.IntStream;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
+import sensor_msgs.Joy;
 
 public class JoystickActivity extends Activity {
     private TextView mTextViewAngle;
@@ -49,7 +50,7 @@ public class JoystickActivity extends Activity {
         
 
         // Set up ros master & JoysStick node
-        NodeMain nodePublisher = new JoystickPublisherNode();
+        NodeMain nodePublisher = new JoystickPublisherNode(JoystickActivity.this);
         NodeMainExecutorService nodeMainExe = new NodeMainExecutorService();
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(InetAddressFactory.newNonLoopback().getHostAddress(), URI.create(masterUri));
         nodeConfiguration.setNodeName(nodePublisher.getDefaultNodeName());

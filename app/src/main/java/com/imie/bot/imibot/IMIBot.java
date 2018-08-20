@@ -8,31 +8,40 @@ import android.bluetooth.BluetoothDevice;
  */
 
 public class IMIBot extends Application {
-    private String BTAddress;
-    private String BTname;
-    private BluetoothDevice device;
+    private String ip;
+    private String port;
 
-    public String getBTAddress() {
-        return BTAddress;
+    public IMIBot() {
+        this.ip = "localhost";
+        this.port = "11311";
     }
 
-    public void setBTAddress(String BTAddress) {
-        this.BTAddress = BTAddress;
+    public IMIBot(String ip) {
+        this.ip = ip;
+        this.port = "11311";
     }
 
-    public String getBTname() {
-        return BTname;
+    public IMIBot(String ip, String port) {
+        this.ip = ip;
+        this.port = port;
     }
 
-    public void setBTname(String BTname) {
-        this.BTname = BTname;
+    public String getIp() {
+        return ip;
     }
 
-    public BluetoothDevice getDevice() {
-        return device;
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
-    public void setDevice(BluetoothDevice device) {
-        this.device = device;
+    public String getPort() {
+        return port;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
+    }
+    public String getStringAddress(){
+        return "http://" + this.ip + ":" + port;
     }
 }

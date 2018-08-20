@@ -1,6 +1,9 @@
 package com.imie.bot.imibot;
 
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.ros.concurrent.CancellableLoop;
 import org.ros.namespace.GraphName;
@@ -16,8 +19,9 @@ import io.github.controlwear.virtual.joystick.android.JoystickView;
 
 public class JoystickPublisherNode extends AbstractNodeMain implements NodeMain {
     private static final String TAG = JoystickPublisherNode.class.getSimpleName();
-
-    public JoystickPublisherNode() {
+    private Context ctx;
+    public JoystickPublisherNode(Context ctx) {
+        this.ctx = ctx;
     }
 
     @Override
@@ -33,6 +37,8 @@ public class JoystickPublisherNode extends AbstractNodeMain implements NodeMain 
 
     @Override
     public void onShutdown(Node node) {
+        Toast.makeText(ctx, "Connexion perdue !",  Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(ctx, FirstConnectionActivity.class);
         Log.d(TAG,"ShutDown node in progress");
     }
 

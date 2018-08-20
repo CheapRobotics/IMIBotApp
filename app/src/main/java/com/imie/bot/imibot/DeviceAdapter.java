@@ -1,6 +1,5 @@
 package com.imie.bot.imibot;
 
-import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,20 +9,20 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class DeviceAdapter extends ArrayAdapter<BluetoothDevice> {
+public class DeviceAdapter extends ArrayAdapter<IMIBot> {
 
     private LayoutInflater inflater;
-    private ArrayList<BluetoothDevice> devices;
+    private ArrayList<IMIBot> bots;
 
-    public DeviceAdapter(Context context, int resource, ArrayList<BluetoothDevice> devices) {
-        super(context, resource, devices);
+    public DeviceAdapter(Context context, int resource, ArrayList<IMIBot> bots) {
+        super(context, resource, bots);
 
-        this.devices = devices;
+        this.bots = bots;
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
-    public BluetoothDevice getItem(int position) {
+    public IMIBot getItem(int position) {
         return super.getItem(position);
     }
 
@@ -31,13 +30,13 @@ public class DeviceAdapter extends ArrayAdapter<BluetoothDevice> {
     public View getDropDownView(int position, View convertView,ViewGroup parent) {
         View row = inflater.inflate(R.layout.spinner_devices_padded, parent, false);
 
-        BluetoothDevice device = devices.get(position);
+        IMIBot device = bots.get(position);
 
         TextView name = (TextView)row.findViewById(R.id.name_label);
         TextView address = (TextView)row.findViewById(R.id.address_label);
 
-        name.setText(device.getName());
-        address.setText(device.getAddress());
+        name.setText(device.getStringAddress());
+
 
         return row;
     }
@@ -46,13 +45,12 @@ public class DeviceAdapter extends ArrayAdapter<BluetoothDevice> {
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = inflater.inflate(R.layout.spinner_devices, parent, false);
 
-        BluetoothDevice device = devices.get(position);
+        IMIBot device = bots.get(position);
 
         TextView name = (TextView)row.findViewById(R.id.name_label);
         TextView address = (TextView)row.findViewById(R.id.address_label);
 
-        name.setText(device.getName());
-        address.setText(device.getAddress());
+        name.setText(device.getStringAddress());
 
         return row;
     }

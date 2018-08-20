@@ -1,7 +1,6 @@
 package com.imie.bot.imibot;
 
 import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,12 +11,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import org.ros.address.InetAddressFactory;
-import org.ros.android.NodeMainExecutorService;
-import org.ros.node.NodeConfiguration;
-import org.ros.node.NodeMain;
-
-import java.net.URI;
 
 public class FirstConnectionActivity extends Activity {
     private Spinner devicesSpinner;
@@ -44,7 +37,7 @@ public class FirstConnectionActivity extends Activity {
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         String address = settings.getString(ROS_MASTER_URI, "");
         if(!address.equals("")){
-            rosMasterUri.setText(address);
+           rosMasterUri.setText(address);
         }
 
 
@@ -53,10 +46,14 @@ public class FirstConnectionActivity extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent(FirstConnectionActivity.this, JoystickActivity.class);
                 String uri = rosMasterUri.getText().toString().trim();
-                intent.putExtra(ROS_MASTER_URI, uri);
+                int index = uri.lastIndexOf(":");
+
+                IMIBot imibot = index != -1 ? new IMIBot(uri.substring(0,index), uri.substring(index +1 )) :
+                        new IMIBot(uri);
+                intent.putExtra(ROS_MASTER_URI, imibot.getStringAddress());
                 SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
                 SharedPreferences.Editor editor = settings.edit();
-                editor.putString(ROS_MASTER_URI, uri);
+                editor.putString(ROS_MASTER_URI, imibot.getIp());
                 editor.commit();
 
                 startActivity(intent);
