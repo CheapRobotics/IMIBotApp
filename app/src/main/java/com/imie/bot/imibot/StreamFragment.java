@@ -43,7 +43,7 @@ public class StreamFragment extends Fragment {
         ButterKnife.bind((Activity) this.getContext());
         SharedPreferences settings = this.getContext().getSharedPreferences(FirstConnectionActivity.PREFS_NAME, 0);
         videoUrl = settings.getString(ROS_MASTER_URI, "");
-        videoUrl = videoUrl.substring(0, videoUrl.lastIndexOf(":")) + ":8080/stream?topic=/webcam/image_raw";
+        videoUrl = "http://" + videoUrl + ":8080/stream?topic=/webcam/image_raw";
 }
 
     @Override

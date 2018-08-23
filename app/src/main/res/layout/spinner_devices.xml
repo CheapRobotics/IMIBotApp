@@ -7,13 +7,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Device Name"
+        android:text="Device Address"
         android:id="@+id/name_label" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="ad:dr:es:s0"
+        android:text=""
         android:id="@+id/address_label" />
 </LinearLayout>
